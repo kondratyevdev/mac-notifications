@@ -51,6 +51,7 @@ Persistent<Function> persistentCallback;
     if (!soundName) {
         soundName = NSUserNotificationDefaultSoundName;
     }
+
     
     BOOL hasReplyButton = json[@"hasReplyButton"] ? [json[@"hasReplyButton"] boolValue] : false;
     NSString *responsePlaceholder = json[@"responsePlaceholder"];
@@ -76,8 +77,12 @@ Persistent<Function> persistentCallback;
     }
     notification.contentImage = contentImage;
 
-    notification.userInfo = @{@"soundName": soundName, @"jsonString": [json bv_jsonStringWithPrettyPrint:false]};
-    
+    if ([@"no-sound" isEqualToString:soundName]) {
+        notification.userInfo = @{@"jsonString": [json bv_jsonStringWithPrettyPrint:false]};
+    } else {
+        notification.userInfo = @{@"soundName": soundName, @"jsonString": [json bv_jsonStringWithPrettyPrint:false]};
+    }
+
     [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
 }
 
