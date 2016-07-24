@@ -8,7 +8,7 @@
 
 using namespace v8;
 
-Persistent<Function> persistentReplyCallback;
+Persistent<Function> persistentCallback;
 
 @interface NotificationsHandler: NSObject<NSUserNotificationCenterDelegate>
 
@@ -136,7 +136,7 @@ Persistent<Function> persistentReplyCallback;
     
     const unsigned argc = 3;
     Local<Value> argv[argc] = { [json v8Value], [@"reply" v8Value], [replyText v8Value] };
-    Local<Function>::New(isolate, persistentReplyCallback)->Call(isolate->GetCurrentContext()->Global(), argc, argv);
+    Local<Function>::New(isolate, persistentCallback)->Call(isolate->GetCurrentContext()->Global(), argc, argv);
 }
 
 - (void)sendActiveCallback:(NSUserNotification *)notification {
@@ -149,15 +149,16 @@ Persistent<Function> persistentReplyCallback;
     
     const unsigned argc = 2;
     Local<Value> argv[argc] = { [json v8Value], [@"active" v8Value] };
-    Local<Function>::New(isolate, persistentReplyCallback)->Call(isolate->GetCurrentContext()->Global(), argc, argv);
+    Local<Function>::New(isolate, persistentCallback)->Call(isolate->GetCurrentContext()->Global(), argc, argv);
 }
 
 @end
 
 
-void initialize(Handle<Function> replyCallback) {
+void initialize(Handle<Function> сallback) {
     [NSUserNotificationCenter defaultUserNotificationCenter].delegate = [NotificationsHandler sharedInstance];
-    persistentReplyCallback.Reset(Isolate::GetCurrent(), replyCallback);
+    
+    persistentCallback.Reset(Isolate::GetCurrent(), сallback);
 }
 
 void showNotification(Handle<String> object) {
