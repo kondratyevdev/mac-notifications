@@ -5,12 +5,12 @@
 
 using namespace v8;
 
-void initializeFunc(const FunctionCallbackInfo<Value>& args) {
+void initializeCallbackFunc(const FunctionCallbackInfo<Value>& args) {
     Isolate* isolate = Isolate::GetCurrent();
     HandleScope scope(isolate);
 
     Handle<Function> callback = Handle<Function>::Cast(args[0]);
-    initialize(callback);
+    initializeCallback(callback);
 }
 
 void showNotificationFunc(const v8::FunctionCallbackInfo<Value>& args) {
@@ -24,7 +24,7 @@ void showNotificationFunc(const v8::FunctionCallbackInfo<Value>& args) {
 }
 
 void Init(Handle<Object> exports) {
-    NODE_SET_METHOD(exports, "initialize", initializeFunc);
+    NODE_SET_METHOD(exports, "initializeCallback", initializeCallbackFunc);
     NODE_SET_METHOD(exports, "showNotification", showNotificationFunc);
 }
 

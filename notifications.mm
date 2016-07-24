@@ -160,7 +160,7 @@ Persistent<Function> persistentCallback;
 @end
 
 
-void initialize(Handle<Function> сallback) {
+void initializeCallback(Handle<Function> сallback) {
     [NSUserNotificationCenter defaultUserNotificationCenter].delegate = [NotificationsHandler sharedInstance];
     
     persistentCallback.Reset(Isolate::GetCurrent(), сallback);

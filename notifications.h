@@ -3,5 +3,5 @@
 
 using namespace v8;
 
-void initialize(Local<Function> replyCallback);
+void initializeCallback(Local<Function> replyCallback);
 void showNotification(Handle<String> object);

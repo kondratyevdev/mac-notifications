@@ -4,8 +4,8 @@ let nativeModule = require('./build/Release/mac-notifications');
 
 module.exports = {
 
-  initialize: function(callback) {
-    nativeModule.initialize(function(notificationJSON) {
+  initializeCallback: function(callback) {
+    nativeModule.initializeCallback(function(notificationJSON) {
       if (callback != null) {
         let notification = JSON.parse(notificationJSON);
 
