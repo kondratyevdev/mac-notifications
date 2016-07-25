@@ -34,12 +34,12 @@ Persistent<Function> persistentCallback;
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
         if (paths.count > 0) {
             NSString *librarySoundsPath = [NSString stringWithFormat:@"%@/Sounds", paths[0]];
-            NSString *librarySoundPath = [NSString stringWithFormat:@"%@/bb2.mp3", librarySoundsPath];
+            NSString *librarySoundPath = [NSString stringWithFormat:@"%@/vk-message.mp3", librarySoundsPath];
             
             NSURL *soundLibraryURL = [NSURL fileURLWithPath:librarySoundPath];
             
             if (![[NSFileManager defaultManager] fileExistsAtPath:[soundLibraryURL absoluteString]]) {
-                NSURL *soundBundleURL = [[NSBundle mainBundle] URLForResource:@"bb2" withExtension:@"mp3"];
+                NSURL *soundBundleURL = [[NSBundle mainBundle] URLForResource:@"vk-message" withExtension:@"mp3"];
                 if (soundBundleURL != nil) {
                     [[NSFileManager defaultManager] copyItemAtURL:soundBundleURL toURL:soundLibraryURL error:nil];
                 }
