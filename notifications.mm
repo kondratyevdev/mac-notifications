@@ -31,6 +31,21 @@ Persistent<Function> persistentCallback;
     self = [super init];
     if (self) {
         
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+        if (paths.count > 0) {
+            NSString *librarySoundsPath = [NSString stringWithFormat:@"%@/Sounds", paths[0]];
+            NSString *librarySoundPath = [NSString stringWithFormat:@"%@/bb2.mp3", librarySoundsPath];
+            
+            NSURL *soundLibraryURL = [NSURL fileURLWithPath:librarySoundPath];
+            
+            if (![[NSFileManager defaultManager] fileExistsAtPath:[soundLibraryURL absoluteString]]) {
+                NSURL *soundBundleURL = [[NSBundle mainBundle] URLForResource:@"bb2" withExtension:@"mp3"];
+                if (soundBundleURL != nil) {
+                    [[NSFileManager defaultManager] copyItemAtURL:soundBundleURL toURL:soundLibraryURL error:nil];
+                }
+            }
+        }
+        
     }
     return self;
 }
@@ -47,12 +62,17 @@ Persistent<Function> persistentCallback;
     NSString *title = json[@"title"];
     NSString *subtitle = json[@"subtitle"];
     NSString *informativeText = json[@"informativeText"];
+
     NSString *soundName = json[@"soundName"];
     if (!soundName) {
         soundName = NSUserNotificationDefaultSoundName;
     }
 
-    
+    BOOL silent = [json[@"silent"] boolValue];
+    if (silent) {
+        soundName = nil;
+    }
+
     BOOL hasReplyButton = json[@"hasReplyButton"] ? [json[@"hasReplyButton"] boolValue] : false;
     NSString *responsePlaceholder = json[@"responsePlaceholder"];
     
@@ -70,18 +90,14 @@ Persistent<Function> persistentCallback;
     notification.title = title;
     notification.subtitle = subtitle;
     notification.informativeText = informativeText;
-    notification.soundName = nil;
+    notification.soundName = soundName;
     notification.hasReplyButton = hasReplyButton;
     if (hasReplyButton) {
         notification.responsePlaceholder = responsePlaceholder;
     }
     notification.contentImage = contentImage;
 
-    if ([@"no-sound" isEqualToString:soundName]) {
-        notification.userInfo = @{@"jsonString": [json bv_jsonStringWithPrettyPrint:false]};
-    } else {
-        notification.userInfo = @{@"soundName": soundName, @"jsonString": [json bv_jsonStringWithPrettyPrint:false]};
-    }
+    notification.userInfo = @{ @"jsonString": [json bv_jsonStringWithPrettyPrint:false] };
 
     [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
 }
@@ -92,15 +108,6 @@ Persistent<Function> persistentCallback;
     id<NSUserNotificationCenterDelegate> delegate = (id<NSUserNotificationCenterDelegate>)[NSApplication sharedApplication].delegate;
     if ([delegate respondsToSelector:@selector(userNotificationCenter:didDeliverNotification:)]) {
         [delegate userNotificationCenter:center didDeliverNotification:notification];
-    }
-    
-    if (notification.userInfo != nil && notification.userInfo[@"soundName"] != nil) {
-        NSSound *sound = [NSSound soundNamed:notification.userInfo[@"soundName"]];
-        if (sound != nil) {
-            [sound stop];
-            sound.currentTime = 0;
-            [sound play];
-        }
     }
 }
 
