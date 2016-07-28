@@ -91,6 +91,7 @@ Persistent<Function> persistentCallback;
     notification.subtitle = subtitle;
     notification.informativeText = informativeText;
     notification.soundName = soundName;
+    NSLog(@"notification soundName %@, silent %@", soundName, silent ? @"YES" : @"NO");
     notification.hasReplyButton = hasReplyButton;
     if (hasReplyButton) {
         notification.responsePlaceholder = responsePlaceholder;
